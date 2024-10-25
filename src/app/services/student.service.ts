@@ -13,4 +13,9 @@ export class StudentService {
     const url = 'http://localhost:8080/student/getAll';
     return this._http.get<Array<IStudent>>(url);
   }
+
+  saveStudent(student: any): Observable<any> {
+    const url = 'http://localhost:8080/student/add';
+    return this._http.post<any>(url, student);
+  }
 }

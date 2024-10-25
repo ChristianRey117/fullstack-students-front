@@ -13,6 +13,12 @@ import {
 } from '@angular/common/http';
 import { IStudent } from './interfaces/IStudent';
 import { CommonModule } from '@angular/common';
+import {
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 
 @Component({
   selector: 'app-root',
@@ -21,6 +27,7 @@ import { CommonModule } from '@angular/common';
     RouterOutlet,
     HttpClientModule,
     CommonModule,
+    ReactiveFormsModule,
     CardModule,
     InputTextModule,
     ButtonModule,
@@ -33,6 +40,10 @@ import { CommonModule } from '@angular/common';
 export class AppComponent implements OnInit {
   title = 'fullstack-students-front';
   students: IStudent[];
+  form = new FormGroup({
+    name: new FormControl('', Validators.required),
+    address: new FormControl('', Validators.required),
+  });
 
   constructor(private readonly _studentService: StudentService) {}
 
@@ -47,5 +58,25 @@ export class AppComponent implements OnInit {
         })
       )
       .subscribe();
+
+    console.log(this.form);
+  }
+
+  saveStudent(): void {
+    console.log(this.form.value);
+    if (this.form.valid) {
+      this._studentService
+        .saveStudent(this.form.value)
+        .pipe(
+          take(1),
+          tap((response) => {
+            console.log(response);
+          })
+        )
+        .subscribe();
+    } else {
+      this.form.markAsTouched();
+      this.form.markAsDirty();
+    }
   }
 }
